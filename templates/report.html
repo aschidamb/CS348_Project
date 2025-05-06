@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fitness Class Report</title>
+    <style>
+        /* Add your CSS here */
+    </style>
+</head>
+<body>
+    <h1>Generate Report</h1>
+    <form method="post" action="{{ url_for('report') }}">
+        <label for="from_date">From Date:</label>
+        <input type="date" id="from_date" name="from_date" required>
+        <br>
+        <label for="to_date">To Date:</label>
+        <input type="date" id="to_date" name="to_date" required>
+        <br>
+        <button type="submit">Generate Report</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% if report_data %}
+    <h2>Report Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Date</th>
+                <th>Instructor</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_data %}
+            <tr>
+                <td>{{ row.class_name }}</td>
+                <td>{{ row.scheduled_date }}</td>
+                <td>{{ row.instructor }}</td>
+                <td>{{ row.gym_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

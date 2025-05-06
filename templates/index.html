@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fitness Class Scheduler</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        /* Navigation Links */
+        nav {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styles */
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 3px;
+        }
+
+        /* Edit Button */
+        button.edit {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button.edit:hover {
+            background-color: #218838;
+        }
+
+        /* Delete Button */
+        button.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        button.delete:hover {
+            background-color: #c82333;
+        }
+
+        /* Flash Messages */
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .flashes li {
+            padding: 10px;
+            margin: 5px auto;
+            width: 50%;
+            border-radius: 5px;
+        }
+
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .warning {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .error {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fitness Classes</h1>
+
+    <nav>
+        <a href="{{ url_for('new_class') }}">Add New Class</a>
+        <a href="{{ url_for('report') }}">Generate Report</a>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% if classes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>Duration (min)</th>
+                <th>Instructor</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class in classes %}
+            <tr>
+                <td>{{ class.class_name }}</td>
+                <td>{{ class.scheduled_date }}</td>
+                <td>{{ class.start_time }}</td>
+                <td>{{ class.duration }}</td>
+                <td>{{ class.instructor.name }}</td>
+                <td>{{ class.location.gym_name }}</td>
+                <td>
+                    <!-- Edit Button -->
+                    <a href="{{ url_for('edit_class', class_id=class.id) }}">
+                        <button class="edit">Edit</button>
+                    </a>
+
+                    <!-- Delete Button -->
+                    <form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST" 
+                          onsubmit="return confirm('Are you sure you want to delete this class?');" style="display:inline;">
+                        <button type="submit" class="delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No classes scheduled.</p>
+    {% endif %}
+
+</body>
+</html>
